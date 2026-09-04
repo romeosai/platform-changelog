@@ -17,6 +17,11 @@
   .filter:hover{border-color:#93c5fd;color:#2563eb}
   .filter.active{background:#3b82f6;color:#fff;border-color:#3b82f6}
 
+  .toolbar{max-width:920px;margin:-12px auto 24px;padding:0 24px;display:flex;justify-content:center}
+  .download-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:20px;border:1px solid #cbd5e1;background:#fff;color:#475569;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;transition:.2s}
+  .download-btn:hover{border-color:#6ee7b7;color:#059669;background:#f0fdf4}
+  .download-btn:active{transform:scale(.97)}
+
   /* 日期／圓點／線的座標統一由 CSS 變數推導，只有一個「真相來源」(--date-w)，
      不再是三個各自手動猜出來、可能對不齊的絕對座標（這是momo哥回報重疊後的根因：
      .event-date 寬度、.event-dot 的 left、.timeline::before 的 left 原本是三個獨立寫死的數字）。
@@ -121,6 +126,10 @@
   <span class="filter" data-cat="pay">付費</span>
 </div>
 
+<div class="toolbar">
+  <button type="button" class="download-btn" id="downloadMdBtn">📥 下載為 Markdown</button>
+</div>
+
 <div class="timeline" id="timeline"></div>
 
 <footer>金猴爺平台組 · 車海仁維護 · 最後更新 2026-09-04</footer>
@@ -172,6 +181,35 @@ document.querySelectorAll('.filter').forEach(f=>f.onclick=()=>{
   document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
   f.classList.add('active');render(f.dataset.cat);
 });
+
+// === 下載為 Markdown ===
+// 格式跟 repo 裡的 platform-changelog.md 保持一致（# 標題 → ## 日期(+時間) ｜ 標題 → 分類/狀態/目的/預期成效）。
+// 永遠輸出「全部」事件（不受目前篩選影響），因為這是要對應完整存檔用的 .md，不是畫面上的局部檢視。
+function eventsToMarkdown(events){
+  let md = '# 平台組大事記\n\n> Platform Changelog · 記錄每一項上線、目的與預期成效\n\n';
+  events.forEach(e=>{
+    const dt = e.time ? `${e.date} ${e.time}` : e.date;
+    md += `## ${dt} ｜ ${e.title}\n\n`;
+    md += `- **分類**：${e.badge}\n`;
+    md += `- **狀態**：${e.statusText}\n`;
+    md += `- **目的**：${e.purpose}\n`;
+    md += `- **預期成效**：${e.effect}\n\n`;
+  });
+  return md.trimEnd() + '\n';
+}
+
+document.getElementById('downloadMdBtn').onclick = () => {
+  const md = eventsToMarkdown(EVENTS);
+  const blob = new Blob([md], {type: 'text/markdown;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'platform-changelog.md';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+};
 </script>
 </body>
 </html>

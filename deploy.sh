@@ -6,7 +6,13 @@ set -e
 cd "$(dirname "$0")"
 
 echo "=== 1/2 部署到 Cloudflare Pages ==="
-npx wrangler pages deploy . --project-name=platform-changelog --commit-dirty=true
+# 只上傳 index.html（公開網頁真正需要的檔案），不要把 deploy.sh/README.md/.git 等
+# repo管理用的檔案也一起上傳成公開可存取的靜態資源（呼應之前 Workers assets.directory
+# 誤指向 repo 根目錄外洩 .git 的教訓：一律用「只放真正要公開的檔案」的乾淨資料夾）
+CF_STAGE=$(mktemp -d)
+cp index.html "$CF_STAGE/"
+npx wrangler pages deploy "$CF_STAGE" --project-name=platform-changelog --commit-dirty=true
+rm -rf "$CF_STAGE"
 
 echo ""
 echo "=== 2/2 commit + push 到 GitHub (版本備份) ==="

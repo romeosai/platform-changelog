@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>平台組大事記 · Platform Changelog</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{overflow-x:hidden;max-width:100vw}
+  body{font-family:'Noto Sans TC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f7fa;color:#2d3748;line-height:1.6;padding:0 0 60px}
+  header{background:linear-gradient(135deg,#e0ecff,#eef2ff,#e0fff4);padding:44px 24px;text-align:center;margin-bottom:24px;border-bottom:1px solid #e2e8f0}
+  header h1{font-size:32px;color:#1e40af;margin-bottom:8px;font-weight:700}
+  header p{color:#64748b;font-size:15px}
+
+  .filters{max-width:920px;margin:0 auto 28px;padding:0 24px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .filter{padding:6px 18px;border-radius:20px;border:1px solid #cbd5e1;background:#fff;color:#475569;cursor:pointer;font-size:14px;font-weight:500;transition:.2s;user-select:none}
+  .filter:hover{border-color:#93c5fd;color:#2563eb}
+  .filter.active{background:#3b82f6;color:#fff;border-color:#3b82f6}
+
+  /* 日期／圓點／線的座標統一由 CSS 變數推導，只有一個「真相來源」(--date-w)，
+     不再是三個各自手動猜出來、可能對不齊的絕對座標（這是momo哥回報重疊後的根因：
+     .event-date 寬度、.event-dot 的 left、.timeline::before 的 left 原本是三個獨立寫死的數字）。
+     --date-w 刻意抓得比實際內容寬（"2026-09-04"這種10字元日期在多數字型下約90~98px），
+     留夠緩衝，不同瀏覽器/字型渲染寬度有落差也不會跟圓點卡在一起。 */
+  .timeline{
+    --h-pad:24px;         /* .timeline自己的左右padding，line的座標計算要把這個算進去 */
+    --date-w:112px;      /* 日期欄寬度，唯一需要調整就能連動全部座標的數字 */
+    --dot-gap:14px;       /* 日期文字右邊界 到 圓點左邊界 的間距 */
+    --dot-size:15px;
+    --line-w:3px;
+    max-width:920px;margin:0 auto;padding:0 var(--h-pad);position:relative
+  }
+  /* 注意：.timeline::before 的定位錨點是 .timeline 本身，但圓點(.event-date::before)是相對
+     .event/.event-date 定位，兩者的容器不同層——.event是.timeline padding「裡面」的內容，
+     所以這裡的 left 一定要把 .timeline 自己的 --h-pad 加回去，兩邊才會對齊在同一條垂直線上。
+     （這正是momo哥回報「日期跟圓點重疊」的根因：舊版這裡漏加了--h-pad，line永遠偏移了24px，
+     結果line剛好切過日期文字右側區域，看起來像日期跟時間軸疊在一起） */
+  .timeline::before{content:'';position:absolute;left:calc(var(--h-pad) + var(--date-w) + var(--dot-gap) + var(--dot-size)/2 - var(--line-w)/2);top:6px;bottom:6px;width:var(--line-w);background:linear-gradient(#3b82f6,#8b5cf6,#10b981);border-radius:2px}
+
+  .event{position:relative;min-height:64px;margin-bottom:28px;padding-left:calc(var(--date-w) + var(--dot-gap) + var(--dot-size) + 20px)}
+  .event:last-child{margin-bottom:0}
+  .event-date{position:absolute;left:0;top:2px;width:var(--date-w);text-align:right}
+  .event-date .d{font-size:15px;font-weight:700;color:#1e293b;white-space:nowrap}
+  .event-date .t{font-size:12px;color:#94a3b8;margin-top:2px;white-space:nowrap}
+  /* 圓點改成 .event-date 的 ::before，位置用 top:50%+transform 相對於日期文字自己的高度置中，
+     不再是「猜一個絕對top值」——不管字型渲染、行高有沒有落差，圓點永遠對齊日期區塊本身 */
+  .event-date::before{content:'';position:absolute;left:calc(100% + var(--dot-gap));top:50%;transform:translateY(-50%);width:var(--dot-size);height:var(--dot-size);border-radius:50%;background:#3b82f6;border:3px solid #f5f7fa;box-shadow:0 0 0 1px #3b82f6;z-index:1}
+
+  .event-card{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #cbd5e1;border-radius:12px;padding:16px 20px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .15s}
+  .event-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08)}
+  .event-card.cat-retention{border-left-color:#3b82f6}
+  .event-card.cat-h5{border-left-color:#10b981}
+  .event-card.cat-crash{border-left-color:#ef4444}
+  .event-card.cat-pay{border-left-color:#f59e0b}
+
+  /* title列：badge/狀態固定不縮，標題文字獨立包一個 span 才能正確設 min-width:0，
+     否則裸文字節點在 flex 容器裡預設 min-width:auto，遇到長標題會把整列擠出可視範圍而不是換行 */
+  .event-card .title{font-size:16px;font-weight:600;color:#1e293b;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .event-card .title-text{flex:1 1 200px;min-width:0;word-break:break-word;overflow-wrap:anywhere}
+  .badge{flex-shrink:0;font-size:12px;padding:2px 10px;border-radius:10px;font-weight:600;white-space:nowrap}
+  .b-retention{background:#dbeafe;color:#2563eb}
+  .b-h5{background:#d1fae5;color:#059669}
+  .b-crash{background:#fee2e2;color:#dc2626}
+  .b-pay{background:#fef3c7;color:#d97706}
+  .status{flex-shrink:0;font-size:11px;padding:2px 9px;border-radius:8px;margin-left:auto;font-weight:600;white-space:nowrap}
+  .s-done{background:#d1fae5;color:#059669}
+  .s-doing{background:#fef3c7;color:#d97706}
+  .s-watch{background:#dbeafe;color:#2563eb}
+
+  /* 目的/預期成效改用 grid：label欄固定寬度+nowrap，值欄可多行自動換行，
+     兩者對齊不再互相打架（原本用 flex + 固定寬度會把「預期成效」斷字成「預期成／效」） */
+  .event-card .row{display:grid;grid-template-columns:96px minmax(0,1fr);gap:2px 10px;font-size:14px;align-items:start}
+  .event-card .row + .row{margin-top:8px}
+  .event-card .label{color:#94a3b8;white-space:nowrap}
+  .event-card .val{color:#475569;line-height:1.7;min-width:0;word-break:break-word;overflow-wrap:anywhere}
+
+  footer{text-align:center;color:#94a3b8;font-size:13px;margin-top:40px}
+
+  /* 斷點從 640px 提高到 760px：momo哥平常是「雙開視窗」看這頁，
+     視窗寬度常落在 640~920 這段「不上不下」的區間，提高斷點讓這個常見寬度直接吃到手機版的堆疊排版，
+     避免 150px 固定側欄在中等寬度把卡片內容擠到跑版 */
+  @media(max-width:760px){
+    /* 手機版把「日期欄+圓點」的座標系統統一改成同一組變數：圓點是 .event-date 自己的
+       ::before，用 left:0 貼齊日期文字左邊、top:50%+transform 對齊日期文字垂直中心，
+       兩者永遠對齊同一個容器，不再是「.event 用 padding-top 猜一個高度、.event-dot
+       再用 top 猜一個絕對座標」這種容易對不準的雙重猜測。
+       --mobile-dot-gap 是日期文字左邊界跟圓點之間的距離，改這一個數字連動line的left。 */
+    .timeline{--mobile-dot-gap:12px}
+    /* 同樣要加回 --h-pad：手機版 .event 沒有自己的 padding-left(=0)，圓點直接貼齊
+       .event 的左邊界，而 .event 的左邊界就是 .timeline 扣掉 --h-pad 之後的內容起點 */
+    .timeline::before{left:calc(var(--h-pad) + var(--dot-size)/2 - var(--line-w)/2)}
+    .event{padding-left:0;padding-top:0;margin-bottom:20px}
+    /* position:relative(不是static)：讓 .event-date 自己成為 ::before 圓點的定位錨點，
+       圓點才會對齊「這一列日期文字」而不是對齊整個.event卡片 */
+    .event-date{position:relative;text-align:left;padding-left:calc(var(--dot-size) + var(--mobile-dot-gap));margin-bottom:6px;width:auto;display:flex;align-items:baseline;gap:8px}
+    .event-date::before{left:0;top:50%;transform:translateY(-50%)}
+    .event-date .t{margin-top:0}
+    .event-card{padding:14px 16px}
+  }
+  @media(max-width:420px){
+    header{padding:32px 16px}
+    header h1{font-size:26px}
+    /* 篩選tab在極窄手機寬度改成「橫向捲動的單行chip列」，不再靠換行計算是否擠得下——
+       無論標籤總寬多少都保證不會撐寬整個頁面，捲動範圍限制在.filters自己內部 */
+    .filters{padding:0 16px;flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding-bottom:4px}
+    .filter{flex-shrink:0}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>平台組大事記</h1>
+  <p>Platform Changelog · 記錄每一項上線、目的與預期成效</p>
+</header>
+
+<div class="filters">
+  <span class="filter active" data-cat="all">全部</span>
+  <span class="filter" data-cat="retention">留存</span>
+  <span class="filter" data-cat="h5">H5活動</span>
+  <span class="filter" data-cat="crash">當機率</span>
+  <span class="filter" data-cat="pay">付費</span>
+</div>
+
+<div class="timeline" id="timeline"></div>
+
+<footer>金猴爺平台組 · 車海仁維護 · 最後更新 2026-09-04</footer>
+
+<script>
+const EVENTS=[
+ {date:'2026-09-04',time:'',cat:'retention',badge:'留存',title:'新手14日BP任務-修正接不到隔天任務問題',status:'done',statusText:'已修正',
+  purpose:'修正BP任務時間判斷邏輯：新手創帳當天不會跨日，導致創帳當天到隔天任務刷新之間出現空窗期',
+  effect:'避免新手在創帳當天與隔天任務刷新之間接不到任務，影響任務連續性與新手體驗'},
+ {date:'2026-09-03',time:'',cat:'retention',badge:'留存',title:'新手14日BP任務-上線後修正(顯示/老玩家誤擋)',status:'done',statusText:'已修正',
+  purpose:'修正9/2上線後衍生的顯示異常與誤擋老玩家問題，避免影響既有玩家體驗',
+  effect:'①修正新手期間任務阻擋顯示與活動頁領獎紅點異常 ②修正9/2前老玩家被誤擋只看到新手任務的問題——改為以創帳時間9/2為界，只有9/2後創帳的新手套用14日BP限制，老玩家不受影響'},
+ {date:'2026-09-02',time:'16:30',cat:'retention',badge:'留存',title:'新手14日BP任務上線',status:'done',statusText:'已上線',
+  purpose:'讓新手D0-D14每天有明確任務追求，養成每日回訪習慣；付費BP($0.99)直接製造VIP2',
+  effect:'預估D7留存+0.3~2.5pp、首儲率+0.1~0.8pp(約84~672人/月)。建議上線後A/B驗證'},
+ {date:'2026-09-01',time:'',cat:'h5',badge:'H5活動',title:'H5「小偷偷金庫」上線(第三款)',status:'done',statusText:'已上線',
+  purpose:'H5活動量產策略第三款，維持平台新鮮感、提升黏著',
+  effect:'豐富平台可玩內容，維持每月2款節奏'},
+ {date:'2026-08-18',time:'',cat:'h5',badge:'H5活動',title:'H5「彈珠檯」上線(第二款)',status:'done',statusText:'已上線',
+  purpose:'H5活動量產第二款',effect:'延續H5量產節奏'},
+ {date:'2026-08',time:'',cat:'crash',badge:'當機率',title:'GP當機率改善達標',status:'done',statusText:'已達標',
+  purpose:'盤查排除當機(SDK串接、AI分析APK記憶體根因)，維持體驗穩定守住留存',
+  effect:'GP當機率從7月底1.6%降到0.88%(改善約45%)，跌破1%達標，取得GP商店推薦資格。目標朝0.5%'},
+ {date:'2026-07-31',time:'',cat:'h5',badge:'H5活動',title:'H5「火箭」上線(平台首款H5)',status:'done',statusText:'已上線',
+  purpose:'平台首款H5小遊戲，開啟H5活動量產策略',effect:'crash類小遊戲，驗證H5可行性'},
+ {date:'2026-04',time:'',cat:'crash',badge:'當機率',title:'當機率盤查專案啟動',status:'done',statusText:'進行中',
+  purpose:'系統性盤查排除當機根因(SDK、記憶體)，長期維持當機率<1%',effect:'持續改善至8月達標<1%，目標0.5%'},
+];
+const tl=document.getElementById('timeline');
+function render(cat){
+  tl.innerHTML='';
+  EVENTS.filter(e=>cat==='all'||e.cat===cat).forEach(e=>{
+    const sCls=e.status==='done'?'s-done':e.status==='doing'?'s-doing':'s-watch';
+    tl.innerHTML+=`<div class="event">
+      <div class="event-date"><div class="d">${e.date}</div>${e.time?`<div class="t">${e.time}</div>`:''}</div>
+      <div class="event-card cat-${e.cat}">
+        <div class="title">
+          <span class="badge b-${e.cat}">${e.badge}</span>
+          <span class="title-text">${e.title}</span>
+          <span class="status ${sCls}">${e.statusText}</span>
+        </div>
+        <div class="row"><span class="label">🎯 目的</span><span class="val">${e.purpose}</span></div>
+        <div class="row"><span class="label">📈 預期成效</span><span class="val">${e.effect}</span></div>
+      </div></div>`;
+  });
+}
+render('all');
+document.querySelectorAll('.filter').forEach(f=>f.onclick=()=>{
+  document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
+  f.classList.add('active');render(f.dataset.cat);
+});
+</script>
+</body>
+</html>

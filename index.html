@@ -136,9 +136,12 @@
 
 <script>
 const EVENTS=[
- {date:'2026-09-04',time:'',cat:'retention',badge:'留存',title:'新手14日BP任務-修正接不到隔天任務問題',status:'done',statusText:'已修正',
-  purpose:'修正BP任務時間判斷邏輯：新手創帳當天不會跨日，導致創帳當天到隔天任務刷新之間出現空窗期',
-  effect:'避免新手在創帳當天與隔天任務刷新之間接不到任務，影響任務連續性與新手體驗'},
+ {date:'2026-09-04',time:'13:00',cat:'retention',badge:'留存',title:'新手14日BP任務-修正接不到隔天任務問題',status:'done',statusText:'已修正',
+  purpose:'修正BP任務時間判斷邏輯：原本用「以創帳時刻為基準的滾動24小時」判斷(account_create_day_bound，寫法[n,n+1])跟任務刷新採「日曆日」(凌晨00:00換日)的邏輯對不上，導致創帳當天不會跨日、創帳當天到隔天任務刷新之間出現空窗期',
+  effect:'新增日曆日判斷欄位account_create_calendar_day_bound(創帳當天為第0天，之後每過一次凌晨00:00才+1天，寫法[n,n]，不可與舊的account_create_day_bound混用)取代原本滾動24小時判斷，避免新手在創帳當天與隔天任務刷新之間接不到任務，影響任務連續性與新手體驗。下午1點部署上線後運作正常'},
+ {date:'2026-09-04',time:'',cat:'retention',badge:'留存',title:'交誼廳贈禮紀錄優化+虎機押注押住段問題修復',status:'done',statusText:'已上線',
+  purpose:'處理玩家客訴(交誼廳贈禮紀錄顯示異常、虎機押注資料押住段問題)',
+  effect:'兩項客訴修復皆已上線驗證，組員回報玩家應不會再客訴'},
  {date:'2026-09-03',time:'',cat:'retention',badge:'留存',title:'新手14日BP任務-上線後修正(顯示/老玩家誤擋)',status:'done',statusText:'已修正',
   purpose:'修正9/2上線後衍生的顯示異常與誤擋老玩家問題，避免影響既有玩家體驗',
   effect:'①修正新手期間任務阻擋顯示與活動頁領獎紅點異常 ②修正9/2前老玩家被誤擋只看到新手任務的問題——改為以創帳時間9/2為界，只有9/2後創帳的新手套用14日BP限制，老玩家不受影響'},

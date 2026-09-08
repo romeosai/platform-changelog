@@ -136,6 +136,9 @@
 
 <script>
 const EVENTS=[
+ {date:'2026-09-08',time:'',cat:'crash',badge:'當機率',title:'iOS包體優化完成里程碑：熱更新架構上線(4.6.7)',status:'done',statusText:'已上線',
+  purpose:'遊戲程式移出主程式、改用熱更新架構載入，持續壓縮iOS App Store下載大小',
+  effect:'4.6.7版本下載大小385MB，較4.5.6優化前基準765MB共減少380MB(-50%)；首包內建資源572→231MB(-60%)、程式與引擎193→154MB(-20%)。改善下載轉化率與低階裝置可玩性'},
  {date:'2026-09-04',time:'13:00',cat:'retention',badge:'留存',title:'新手14日BP任務-修正接不到隔天任務問題',status:'done',statusText:'已修正',
   purpose:'修正BP任務時間判斷邏輯：原本用「以創帳時刻為基準的滾動24小時」判斷(account_create_day_bound，寫法[n,n+1])跟任務刷新採「日曆日」(凌晨00:00換日)的邏輯對不上，導致創帳當天不會跨日、創帳當天到隔天任務刷新之間出現空窗期',
   effect:'新增日曆日判斷欄位account_create_calendar_day_bound(創帳當天為第0天，之後每過一次凌晨00:00才+1天，寫法[n,n]，不可與舊的account_create_day_bound混用)取代原本滾動24小時判斷，避免新手在創帳當天與隔天任務刷新之間接不到任務，影響任務連續性與新手體驗。下午1點部署上線後運作正常'},
@@ -158,6 +161,12 @@ const EVENTS=[
   effect:'GP當機率從7月底1.6%降到0.88%(改善約45%)，跌破1%達標，取得GP商店推薦資格。目標朝0.5%'},
  {date:'2026-07-31',time:'',cat:'h5',badge:'H5活動',title:'H5「火箭」上線(平台首款H5)',status:'done',statusText:'已上線',
   purpose:'平台首款H5小遊戲，開啟H5活動量產策略',effect:'crash類小遊戲，驗證H5可行性'},
+ {date:'2026-07-09',time:'',cat:'crash',badge:'當機率',title:'iOS包體優化：舊活動功能整包下架(4.6.1)',status:'done',statusText:'已上線',
+  purpose:'移除舊活動功能整包與低頻功能，改點擊才下載，降低首包負擔',
+  effect:'版本下載大小從532MB降到421MB(-111MB)，是整個優化過程單版最大降幅之一'},
+ {date:'2026-06-16',time:'',cat:'crash',badge:'當機率',title:'iOS包體優化：43隻大廳角色改點擊才下載(4.6.0)',status:'done',statusText:'已上線',
+  purpose:'大廳角色資源改為點擊才下載，不再全部內建首包',
+  effect:'版本下載大小從674MB降到532MB(-142MB)，是整個優化過程單版最大降幅'},
  {date:'2026-04',time:'',cat:'crash',badge:'當機率',title:'當機率盤查專案啟動',status:'done',statusText:'進行中',
   purpose:'系統性盤查排除當機根因(SDK、記憶體)，長期維持當機率<1%',effect:'持續改善至8月達標<1%，目標0.5%'},
 ];

@@ -57,6 +57,7 @@
   .event-card.cat-h5{border-left-color:#10b981}
   .event-card.cat-crash{border-left-color:#ef4444}
   .event-card.cat-pay{border-left-color:#f59e0b}
+  .event-card.cat-compliance{border-left-color:#8b5cf6}
 
   /* title列：badge/狀態固定不縮，標題文字獨立包一個 span 才能正確設 min-width:0，
      否則裸文字節點在 flex 容器裡預設 min-width:auto，遇到長標題會把整列擠出可視範圍而不是換行 */
@@ -67,6 +68,7 @@
   .b-h5{background:#d1fae5;color:#059669}
   .b-crash{background:#fee2e2;color:#dc2626}
   .b-pay{background:#fef3c7;color:#d97706}
+  .b-compliance{background:#ede9fe;color:#7c3aed}
   .status{flex-shrink:0;font-size:11px;padding:2px 9px;border-radius:8px;margin-left:auto;font-weight:600;white-space:nowrap}
   .s-done{background:#d1fae5;color:#059669}
   .s-doing{background:#fef3c7;color:#d97706}
@@ -124,6 +126,7 @@
   <span class="filter" data-cat="h5">H5活動</span>
   <span class="filter" data-cat="crash">當機率</span>
   <span class="filter" data-cat="pay">付費</span>
+  <span class="filter" data-cat="compliance">合規</span>
 </div>
 
 <div class="toolbar">
@@ -136,6 +139,9 @@
 
 <script>
 const EVENTS=[
+ {date:'2026-09-14',time:'',cat:'compliance',badge:'合規',title:'Google商店頁OAuth 2.0同意畫面品牌辨別政策驗證完成',status:'done',statusText:'已完成',
+  purpose:'通過Google OAuth 2.0同意畫面的品牌辨別(Brand Verification)政策審核，確保玩家登入授權時看到的應用程式身份資訊符合Google驗證標準',
+  effect:'避免玩家在Google登入/授權流程看到「未驗證應用程式」的警告畫面，降低登入流程的信任疑慮與流失風險，同時符合Google平台合規要求'},
  {date:'2026-09-14',time:'',cat:'crash',badge:'當機率',title:'4.6.7版本正式開放玩家下載遊玩',status:'done',statusText:'已上線',
   purpose:'4.6.7版本(含熱更新架構、iOS下載大小385MB)結束前期測試階段，正式對全體玩家開放下載遊玩',
   effect:'玩家可實際體驗包體優化成果(較優化前765MB基準減少50%)，以及熱更新架構帶來的後續內容更新彈性(遊戲程式移出主程式，之後更新不需再整包更新)'},

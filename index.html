@@ -23,7 +23,7 @@
   .download-btn:active{transform:scale(.97)}
 
   /* 日期／圓點／線的座標統一由 CSS 變數推導，只有一個「真相來源」(--date-w)，
-     不再是三個各自手動猜出來、可能對不齊的絕對座標（這是momo哥回報重疊後的根因：
+     不再是三個各自手動猜出來、可能對不齊的絕對座標（這是使用者回報重疊後的根因：
      .event-date 寬度、.event-dot 的 left、.timeline::before 的 left 原本是三個獨立寫死的數字）。
      --date-w 刻意抓得比實際內容寬（"2026-09-04"這種10字元日期在多數字型下約90~98px），
      留夠緩衝，不同瀏覽器/字型渲染寬度有落差也不會跟圓點卡在一起。 */
@@ -38,7 +38,7 @@
   /* 注意：.timeline::before 的定位錨點是 .timeline 本身，但圓點(.event-date::before)是相對
      .event/.event-date 定位，兩者的容器不同層——.event是.timeline padding「裡面」的內容，
      所以這裡的 left 一定要把 .timeline 自己的 --h-pad 加回去，兩邊才會對齊在同一條垂直線上。
-     （這正是momo哥回報「日期跟圓點重疊」的根因：舊版這裡漏加了--h-pad，line永遠偏移了24px，
+     （這正是使用者回報「日期跟圓點重疊」的根因：舊版這裡漏加了--h-pad，line永遠偏移了24px，
      結果line剛好切過日期文字右側區域，看起來像日期跟時間軸疊在一起） */
   .timeline::before{content:'';position:absolute;left:calc(var(--h-pad) + var(--date-w) + var(--dot-gap) + var(--dot-size)/2 - var(--line-w)/2);top:6px;bottom:6px;width:var(--line-w);background:linear-gradient(#3b82f6,#8b5cf6,#10b981);border-radius:2px}
 
@@ -83,7 +83,7 @@
 
   footer{text-align:center;color:#94a3b8;font-size:13px;margin-top:40px}
 
-  /* 斷點從 640px 提高到 760px：momo哥平常是「雙開視窗」看這頁，
+  /* 斷點從 640px 提高到 760px：使用者平常是「雙開視窗」看這頁，
      視窗寬度常落在 640~920 這段「不上不下」的區間，提高斷點讓這個常見寬度直接吃到手機版的堆疊排版，
      避免 150px 固定側欄在中等寬度把卡片內容擠到跑版 */
   @media(max-width:760px){

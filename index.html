@@ -58,6 +58,7 @@
   .event-card.cat-crash{border-left-color:#ef4444}
   .event-card.cat-pay{border-left-color:#f59e0b}
   .event-card.cat-compliance{border-left-color:#8b5cf6}
+  .event-card.cat-hall{border-left-color:#0ea5e9}
 
   /* title列：badge/狀態固定不縮，標題文字獨立包一個 span 才能正確設 min-width:0，
      否則裸文字節點在 flex 容器裡預設 min-width:auto，遇到長標題會把整列擠出可視範圍而不是換行 */
@@ -69,6 +70,7 @@
   .b-crash{background:#fee2e2;color:#dc2626}
   .b-pay{background:#fef3c7;color:#d97706}
   .b-compliance{background:#ede9fe;color:#7c3aed}
+  .b-hall{background:#e0f2fe;color:#0369a1}
   .status{flex-shrink:0;font-size:11px;padding:2px 9px;border-radius:8px;margin-left:auto;font-weight:600;white-space:nowrap}
   .s-done{background:#d1fae5;color:#059669}
   .s-doing{background:#fef3c7;color:#d97706}
@@ -127,6 +129,7 @@
   <span class="filter" data-cat="crash">當機率</span>
   <span class="filter" data-cat="pay">付費</span>
   <span class="filter" data-cat="compliance">合規</span>
+  <span class="filter" data-cat="hall">廳館</span>
 </div>
 
 <div class="toolbar">
@@ -135,10 +138,13 @@
 
 <div class="timeline" id="timeline"></div>
 
-<footer>金猴爺平台組 · 車海仁維護 · 最後更新 2026-09-30</footer>
+<footer>金猴爺平台組 · 車海仁維護 · 最後更新 2026-10-06</footer>
 
 <script>
 const EVENTS=[
+ {date:'2026-10-01',time:'時間未提供',cat:'hall',badge:'廳館',title:'關閉麻將廳館，保留好友對戰房',status:'done',statusText:'已完成',
+  purpose:'玩法與廳館調整：關閉「麻將廳館」，只保留「好友對戰房」',
+  effect:'麻將玩法僅保留好友對戰房，原麻將廳館已關閉'},
  {date:'2026-09-30',time:'時間未提供',cat:'pay',badge:'付費',title:'官網輪播圖更新MyCard宣傳(國際官網)',status:'done',statusText:'已上線(正式機)',
   purpose:'在國際官網輪播圖加入MyCard宣傳內容，提升MyCard儲值管道的曝光',
   effect:'玩家進入國際官網即可看到MyCard宣傳，協助引導玩家使用MyCard儲值'},

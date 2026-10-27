@@ -26,7 +26,7 @@
 ## 2026-10-22 時間未提供 ｜ LevelUp 手把支援（levelup_ic_gamepad）：票15 已推 trunk 測試包、票13 正式包複驗完成
 
 - **分類**：合規
-- **狀態**：進行中（尚未開 PR）
+- **狀態**：已合併 master、待出包
 - **目的**：LevelUp 手把支援（分支 levelup_ic_gamepad）
 - **預期成效**：票15 已推到 trunk 測試包；票13 正式包已用 S22＋Switch Pro 手把複驗完成；尚未開 PR（客戶端回報）
 

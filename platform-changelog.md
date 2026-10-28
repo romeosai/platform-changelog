@@ -2,6 +2,13 @@
 
 > Platform Changelog · 記錄每一項上線、目的與預期成效
 
+## 2026-10-28 09:37 ｜ 萬聖節推幣機換皮（PR #2450 合併 master）
+
+- **分類**：廳館
+- **狀態**：已合併 master
+- **目的**：把推幣機換成萬聖節主題的視覺與設定，配合活動企劃需求。
+- **預期成效**：實際調整：合併 event_pusher.assetbundle 換皮內容（AssetGraph 設定、PusherGame.prefab、FH_UIManager_CoinPusher.cs 三處一致）。發現紅卡包縮放殘留值，已另開 PR #2454 微調（待 review，尚未上線）。
+
 ## 2026-10-27 時間未提供 ｜ 刪除部分跑馬燈設定（含移除無用程式）
 
 - **分類**：留存

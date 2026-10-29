@@ -142,6 +142,12 @@
 
 <script>
 const EVENTS=[
+ {date:'2026-10-29',time:'11:30',cat:'compliance',badge:'合規',title:'4.7.0 Android 上線，含 Google Play Games Level Up 大螢幕與手把修正（PR #2439、#2438、#2456），並提交 Level Up 重新送審',status:'done',statusText:'已上線(Android 正式機)',
+  purpose:'4.7.0 Android 版上線；一併修正 Google Play Games Level Up 在大螢幕（PR #2439）與手把操作（PR #2438、#2456）的問題，並重新提交 Level Up 送審。',
+  effect:'Level Up 重新送審中，審核結果待回報。'},
+ {date:'2026-10-29',time:'時間未提供',cat:'retention',badge:'留存',title:'客訴頁面無資料時誤顯示簡體中文修正',status:'done',statusText:'已上線(正式機)',
+  purpose:'修正客訴頁面在沒有資料時，畫面誤顯示成簡體中文的問題。已發正式機。',
+  effect:'客訴頁面無資料時改為正確語系顯示。'},
  {date:'2026-10-28',time:'09:37',cat:'hall',badge:'廳館',title:'萬聖節推幣機換皮（PR #2450 合併 master）',status:'done',statusText:'已合併 master',
   purpose:'把推幣機換成萬聖節主題的視覺與設定，配合活動企劃需求。',
   effect:'實際調整：合併 event_pusher.assetbundle 換皮內容（AssetGraph 設定、PusherGame.prefab、FH_UIManager_CoinPusher.cs 三處一致）。發現紅卡包縮放殘留值，已另開 PR #2454 微調（待 review，尚未上線）。'},

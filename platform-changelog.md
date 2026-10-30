@@ -2,11 +2,11 @@
 
 > Platform Changelog · 記錄每一項上線、目的與預期成效
 
-## 2026-10-29 11:30 ｜ 4.7.0 Android 上線，含 Google Play Games Level Up 大螢幕與手把修正（PR #2439、#2438、#2456），並提交 Level Up 重新送審
+## 2026-10-29 11:30 ｜ 重新送審 Google Play Games Level Up（含 Vulkan 申訴）；4.7.0 Android 上線
 
 - **分類**：合規
 - **狀態**：已上線(Android 正式機)
-- **目的**：4.7.0 Android 版上線；一併修正 Google Play Games Level Up 在大螢幕（PR #2439）與手把操作（PR #2438、#2456）的問題，並重新提交 Level Up 送審。
+- **目的**：4.7.0 Android 版 10/29 11:30 上線，已包含大螢幕（PR #2439）與手把操作（PR #2438、#2456）的修正，並附示範影片重新送審 Google Play Games Level Up；圖形（Vulkan）部分一併提出申訴。
 - **預期成效**：Level Up 重新送審中，審核結果待回報。
 
 ## 2026-10-29 時間未提供 ｜ 客訴頁面無資料時誤顯示簡體中文修正
